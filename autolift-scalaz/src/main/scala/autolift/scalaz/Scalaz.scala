@@ -2,7 +2,13 @@ package autolift
 
 import autolift.scalaz._
 
-object Scalaz extends Syntax with Context with Reexports with Implicits with LiftMapSyntax with ScalazLiftBindSyntax {
+object Scalaz extends Syntax
+  with Context
+  with Reexports
+  with Implicits
+  with LiftMapSyntax
+  with ScalazLiftBindSyntax
+  with ScalazLiftJoinSyntax {
 
   protected type Functor[T[_]] = _root_.scalaz.Functor[T]
   protected type FlatMap[T[_]] = _root_.scalaz.Bind[T]
@@ -23,7 +29,6 @@ object Scalaz extends Syntax with Context with Reexports with Implicits with Lif
 	implicit def mkFld[Obj](implicit lift: ScalazLiftFold[Obj]): ScalazLiftFold.Aux[Obj, lift.Out] = lift
 	implicit def mkFlM[Obj, Fn](implicit lift: ScalazLiftFoldMap[Obj, Fn]): ScalazLiftFoldMap.Aux[Obj, Fn, lift.Out] = lift
 	implicit def mkFlA[M[_], Obj](implicit lift: ScalazLiftFoldAt[M, Obj]): ScalazLiftFoldAt.Aux[M, Obj, lift.Out] = lift
-	implicit def mkFl[M[_], Obj](implicit lift: ScalazLiftFlatten[M, Obj]): ScalazLiftFlatten.Aux[M, Obj, lift.Out] = lift
 	implicit def mkFil[Obj, Fn](implicit lift: ScalazLiftFilter[Obj, Fn]): ScalazLiftFilter[Obj, Fn] = lift
 	implicit def mkFAll[Obj, Fn](implicit lift: ScalazFoldAll[Obj, Fn]): ScalazFoldAll[Obj, Fn] = lift
 	implicit def mkFAny[Obj, Fn](implicit lift: ScalazFoldExists[Obj, Fn]): ScalazFoldExists[Obj, Fn] = lift
