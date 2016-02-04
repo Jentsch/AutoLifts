@@ -4,7 +4,6 @@ import autolift._
 
 trait Syntax extends LiftMapSyntax
 	with LiftApSyntax
-	with LiftBindSyntax
 	with LiftFilterSyntax
 	with LiftFoldLeftSyntax
 	with LiftFoldRightSyntax
@@ -23,3 +22,4 @@ trait Syntax extends LiftMapSyntax
 	with FoldCompleteSyntax
 	with FoldOverSyntax
 	with FoldWithSyntax
+

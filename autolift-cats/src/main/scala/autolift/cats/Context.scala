@@ -3,7 +3,6 @@ package autolift.cats
 import autolift._
 
 trait Context extends LiftApContext
-  with LiftFlatMapContext
   with LiftFilterContext
   with LiftFoldLeftContext
   with LiftFoldRightContext
@@ -22,3 +21,4 @@ trait Context extends LiftApContext
   with FoldWithContext
   with FoldForallContext
   with FoldExistsContext
+
