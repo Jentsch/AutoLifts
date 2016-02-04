@@ -4,11 +4,11 @@ import autolift.cats._
 
 object Cats extends Syntax with Context with Reexports with Implicits with LiftMapSyntax with LiftFlatMapSyntax {
   protected type Functor[F[_]] = _root_.cats.Functor[F]
-  protected type Monad[M[_]] = _root_.cats.Monad[M]
+  protected type FlatMap[M[_]] = _root_.cats.FlatMap[M]
 
   protected def map[F[_], A, B](fa: F[A])(f: A => B)(implicit fun: Functor[F]): F[B] =
     fun.map(fa)(f)
-  protected def flatMap[M[_], A, B](ma: M[A])(f: A => M[B])(implicit m: Monad[M]): M[B] =
+  protected def flatMap[M[_], A, B](ma: M[A])(f: A => M[B])(implicit m: FlatMap[M]): M[B] =
     m.flatMap(ma)(f)
 
 	implicit def liftedMapFunctor[A]: Functor[LiftedMap[A, ?]] =

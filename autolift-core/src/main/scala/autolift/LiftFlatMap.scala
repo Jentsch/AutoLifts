@@ -3,9 +3,9 @@ package autolift
 
 trait LiftFlatMapSemantic { self =>
   protected type Functor[F[_]]
-  protected type Monad[F[_]]
+  protected type FlatMap[F[_]]
   protected def map[F[_]: Functor, A, B](fa: F[A])(f: A => B): F[B]
-  protected def flatMap[M[_]: Monad, A, B](ma: M[A])(f: A => M[B]): M[B]
+  protected def flatMap[M[_]: FlatMap, A, B](ma: M[A])(f: A => M[B]): M[B]
 
   // implicit def liftedFlatMapFunctor[A, M[_]]: Functor[LiftFlatMap[A, ?, M]]
 
@@ -21,7 +21,7 @@ trait LiftFlatMapSemantic { self =>
   object LiftFlatMap extends LowPriorityLiftFlatMap {
     def apply[Obj, Fn](implicit lift: LiftFlatMap[Obj, Fn]): Aux[Obj, Fn, lift.Out] = lift
 
-    implicit def base[M[_]: Monad, A, C >: A, B]: Aux[M[A], C => M[B], M[B]] =
+    implicit def base[M[_]: FlatMap, A, C >: A, B]: Aux[M[A], C => M[B], M[B]] =
       new LiftFlatMap[M[A], C => M[B]]{
         type Out = M[B]
 
@@ -40,7 +40,7 @@ trait LiftFlatMapSemantic { self =>
       }
   }
 
-  final class LiftedFlatMap[A, B, M[_]: Monad: Functor](protected val f: A => M[B]) {
+  final class LiftedFlatMap[A, B, M[_]: FlatMap: Functor](protected val f: A => M[B]) {
     def andThen[C >: B, D](that: LiftedFlatMap[C, D, M]) = new LiftedFlatMap({ x: A => flatMap(f(x))(that.f) })
 
     def compose[C, D <: A](that: LiftedFlatMap[C, D, M]) = that andThen this
@@ -68,6 +68,6 @@ trait LiftFlatMapSyntax extends LiftFlatMapSemantic {
     def liftFlatMap[B, C, M[_]](f: B => M[C])(implicit lift: LiftFlatMap[F[A], B => M[C]]): lift.Out = lift(fa, f)
   }
 
-	def liftFlatMap[A, B, M[_]: Monad: Functor](f: A => M[B]) = new LiftedFlatMap(f)
+	def liftFlatMap[A, B, M[_]: FlatMap: Functor](f: A => M[B]) = new LiftedFlatMap(f)
 }
 

@@ -5,10 +5,10 @@ import autolift.scalaz._
 object Scalaz extends Syntax with Context with Reexports with Implicits with LiftMapSyntax with ScalazLiftBindSyntax {
 
   protected type Functor[T[_]] = _root_.scalaz.Functor[T]
-  protected type Monad[T[_]] = _root_.scalaz.Bind[T]
+  protected type FlatMap[T[_]] = _root_.scalaz.Bind[T]
   protected def map[F[_], A, B](fa: F[A])(f: A => B)(implicit fun: Functor[F]): F[B] =
     fun.map(fa)(f)
-  protected def flatMap[M[_], A, B](ma: M[A])(f: A => M[B])(implicit m: Monad[M]): M[B] =
+  protected def flatMap[M[_], A, B](ma: M[A])(f: A => M[B])(implicit m: FlatMap[M]): M[B] =
     m.bind(ma)(f)
 
 	implicit def liftedMapFunctor[A]: Functor[LiftedMap[A, ?]] =
