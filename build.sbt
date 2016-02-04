@@ -10,6 +10,7 @@ lazy val root = (project in file(".")).settings(
 .aggregate(core, autoAlge, autoScalaz, autoCats, docs)
 
 lazy val core = module("autolift-core").settings(
+  libraryDependencies += compilerPlugin("org.spire-math" %% "kind-projector" % "0.6.3"),
   sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.genCore)
 )
 

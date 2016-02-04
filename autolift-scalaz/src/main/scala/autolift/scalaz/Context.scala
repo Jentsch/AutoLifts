@@ -2,8 +2,7 @@ package autolift.scalaz
 
 import autolift._
 
-trait Context extends LiftMapContext
-	with LiftApContext
+trait Context extends LiftApContext
 	with LiftBindContext
 	with LiftFilterContext
 	with LiftFoldLeftContext

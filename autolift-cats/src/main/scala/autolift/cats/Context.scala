@@ -2,8 +2,7 @@ package autolift.cats
 
 import autolift._
 
-trait Context extends LiftMapContext
-  with LiftApContext
+trait Context extends LiftApContext
   with LiftFlatMapContext
   with LiftFilterContext
   with LiftFoldLeftContext

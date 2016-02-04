@@ -2,8 +2,16 @@ package autolift
 
 import autolift.cats._
 
-object Cats extends Syntax with Context with Reexports with Implicits{
-  implicit def mkM[Obj, Fn](implicit lift: CatsLiftMap[Obj, Fn]): CatsLiftMap.Aux[Obj, Fn, lift.Out] = lift
+object Cats extends Syntax with Context with Reexports with Implicits with LiftMapSyntax {
+  protected type Functor[F[_]] = _root_.cats.Functor[F]
+  protected def map[F[_], A, B](fa: F[A])(f: A => B)(implicit fun: Functor[F]): F[B] =
+    fun.map(fa)(f)
+
+	implicit def liftedMapFunctor[A]: Functor[LiftedMap[A, ?]] =
+    new Functor[LiftedMap[A, ?]] {
+      def map[B, C](lm: LiftedMap[A, B])(f: B => C) = lm map f
+    }
+
   implicit def mkAp[Obj, Fn](implicit lift: CatsLiftAp[Obj, Fn]): CatsLiftAp.Aux[Obj, Fn, lift.Out] = lift
   implicit def mkFM[Obj, Fn](implicit lift: CatsLiftFlatMap[Obj, Fn]): CatsLiftFlatMap.Aux[Obj, Fn, lift.Out] = lift
   implicit def mkFldL[Obj, Fn, Z](implicit lift: CatsLiftFoldLeft[Obj, Fn, Z]): CatsLiftFoldLeft.Aux[Obj, Fn, Z, lift.Out] = lift

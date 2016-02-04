@@ -3,7 +3,17 @@ package autolift
 import autolift.scalaz._
 
 object Scalaz extends Syntax with Context with Reexports with Implicits{
-	implicit def mkM[Obj, Fn](implicit lift: ScalazLiftMap[Obj, Fn]): ScalazLiftMap.Aux[Obj, Fn, lift.Out] = lift
+
+  protected type Functor[T[_]] = _root_.scalaz.Functor[T]
+  protected def map[F[_], A, B](fa: F[A])(f: A => B)(implicit fun: Functor[F]): F[B] =
+    fun.map(fa)(f)
+
+	implicit def liftedMapFunctor[A]: Functor[LiftedMap[A, ?]] =
+    new Functor[LiftedMap[A, ?]] {
+      def map[B, C](lm: LiftedMap[A, B])(f: B => C) = lm map f
+    }
+
+
 	implicit def mkAp[Obj, Fn](implicit lift: ScalazLiftAp[Obj, Fn]): ScalazLiftAp.Aux[Obj, Fn, lift.Out] = lift
 	implicit def mkFM[Obj, Fn](implicit lift: ScalazLiftFlatMap[Obj, Fn]): ScalazLiftFlatMap.Aux[Obj, Fn, lift.Out] = lift
 	implicit def mkFldL[Obj, Fn, Z](implicit lift: ScalazLiftFoldLeft[Obj, Fn, Z]): ScalazLiftFoldLeft.Aux[Obj, Fn, Z, lift.Out] = lift
@@ -25,3 +35,4 @@ object Scalaz extends Syntax with Context with Reexports with Implicits{
 	implicit def mkJ[Obj1, Obj2](implicit lift: ScalazLiftMerge[Obj1, Obj2]): ScalazLiftMerge.Aux[Obj1, Obj2, lift.Out] = lift
 	implicit def mkJw[Obj1, Obj2, Fn](implicit lift: ScalazLiftMergeWith[Obj1, Obj2, Fn]): ScalazLiftMergeWith.Aux[Obj1, Obj2, Fn, lift.Out] = lift
 }
+

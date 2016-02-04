@@ -1,5 +1,4 @@
 package autolift.algebird
 
-trait Implicits extends LiftedMapImplicits
-	with LiftedApImplicits
+trait Implicits extends LiftedApImplicits
 	with LiftedFlatMapImplicits
