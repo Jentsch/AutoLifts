@@ -1,7 +1,7 @@
 package autolift
 
 
-trait LiftFlatMapSemantik { self =>
+trait LiftFlatMapSemantic { self =>
   protected type Functor[F[_]]
   protected type Monad[F[_]]
   protected def map[F[_]: Functor, A, B](fa: F[A])(f: A => B): F[B]
@@ -51,7 +51,7 @@ trait LiftFlatMapSemantik { self =>
   }
 }
 
-trait LiftFlatMapSyntax extends LiftFlatMapSemantik {
+trait LiftFlatMapSyntax extends LiftFlatMapSemantic {
 
   /// Syntax extension providing for a `liftFlatMap` method.
   implicit class LiftFlatMapOps[F[_], A](fa: F[A]){

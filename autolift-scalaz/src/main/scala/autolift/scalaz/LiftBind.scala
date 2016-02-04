@@ -1,10 +1,10 @@
 package autolift.scalaz
 
 import scalaz.{Functor, Bind}
-import autolift.LiftFlatMapSemantik 
+import autolift.LiftFlatMapSemantic
 
 
-trait ScalazLiftBindSyntax extends LiftFlatMapSemantik {
+trait ScalazLiftBindSyntax extends LiftFlatMapSemantic {
 
 	def liftBind[A, B, M[_]](f: A => M[B])(implicit bind: Bind[M]) = new LiftedBind(f)
 

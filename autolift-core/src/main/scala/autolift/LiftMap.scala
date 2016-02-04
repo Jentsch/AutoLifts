@@ -1,6 +1,6 @@
 package autolift
 
-trait LiftMapSemantik {
+trait LiftMapSemantic {
   protected type Functor[T[_]]
   protected def map[F[_]: Functor, A, B](fa: F[A])(f: A => B): F[B]
 
@@ -53,7 +53,7 @@ trait LiftMapSemantik {
  * Importing a instance of this trait will add the {{{liftMap}}} methods on
  * Functors.
  */
-trait LiftMapSyntax extends LiftMapSemantik {
+trait LiftMapSyntax extends LiftMapSemantic {
 
 
   /// Syntax extension providing for a `liftMap` method.
