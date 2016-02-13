@@ -22,4 +22,3 @@ trait Syntax extends LiftMapSyntax
 	with FoldCompleteSyntax
 	with FoldOverSyntax
 	with FoldWithSyntax
-

@@ -7,6 +7,7 @@ object Scalaz extends Syntax
   with Reexports
   with Implicits
   with LiftMapSyntax
+  with ScalazLiftMapSemantic
   with ScalazLiftBindSyntax
   with ScalazLiftJoinSyntax {
 

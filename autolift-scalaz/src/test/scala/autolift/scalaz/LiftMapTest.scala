@@ -1,10 +1,13 @@
 package autolift.test.scalaz
 
+import autolift.LiftMapSyntax
+
 import scalaz._
 import Scalaz._
 import autolift.Scalaz._
 
-class LiftMapTest extends BaseSpec{
+class LiftMapTest extends BaseSpec {
+
 	"liftMap on an Option[List]" should "work" in{
 		val in = Option(List(1))
 		val out = in liftMap intF
@@ -12,12 +15,23 @@ class LiftMapTest extends BaseSpec{
 		same[Option[List[Int]]](out, Option(List(2)))
 	}
 
-	"liftMap on an Option[List]" should "work with functions" in{
+	it should "work with functions" in{
 		val in = Option(List(1, 2))
 		val out = in liftMap anyF
 
 		same[Option[Int]](out, Option(1))
 	}
+
+  it should "work with natural transformations" in {
+    val in = Option(List(1, 2))
+    val f: List ~> Option = new ~>[List, Option] {
+      def apply[X](l: List[X]) = l.headOption
+    }
+
+    val out = in.liftMap(f)
+
+    same[Option[Option[Int]]](out, Option(Option(1)))
+  }
 
 	"LiftedMap" should "work on a List" in{
 		val lf = liftMap(intF)

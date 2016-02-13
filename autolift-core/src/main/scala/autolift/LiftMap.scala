@@ -55,7 +55,6 @@ trait LiftMapSemantic {
  */
 trait LiftMapSyntax extends LiftMapSemantic {
 
-
   /// Syntax extension providing for a `liftMap` method.
   implicit class LiftMapOps[F[_], A](fa: F[A]){
 
@@ -64,13 +63,10 @@ trait LiftMapSyntax extends LiftMapSemantic {
      * of function invocation.
      *
      * @param f the function to be lifted.
-     * @tparam B the argument type of the function.
-     * @tparam C the return type of the function.
      */
-    def liftMap[B, C](f: B => C)(implicit lift: LiftMap[F[A], B => C]): lift.Out = lift(fa, f)
+    def liftMap[Func](f: Func)(implicit lift: LiftMap[F[A], Func]): lift.Out = lift(fa, f)
   }
 
   def liftMap[A, B](f: A => B) = new LiftedMap(f)
 
 }
-
