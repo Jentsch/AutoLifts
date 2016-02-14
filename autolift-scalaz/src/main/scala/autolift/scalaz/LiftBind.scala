@@ -1,10 +1,21 @@
 package autolift.scalaz
 
-import scalaz.{Functor, Bind}
+import scalaz.Alpha.M
+import scalaz.{~>, Functor, Bind}
 import autolift.LiftFlatMapSemantic
 
+trait ScalazLiftBindSemantic extends LiftFlatMapSemantic {
+	implicit def polyBindBase[M[_]: FlatMap, A[_], C]:
+	    LiftFlatMap.Aux[M[A[C]], A ~> Lambda[X => M[X]], M[C]] =
+		new LiftFlatMap[M[A[C]], A ~> Lambda[X => M[X]]]{
+			type Out = M[C]
 
-trait ScalazLiftBindSyntax extends LiftFlatMapSemantic {
+			def apply(fa: M[A[C]], f: A ~> Lambda[X => M[X]]): this.Out =
+        flatMap(fa) { i: A[C] => f(i) }
+		}
+}
+
+trait ScalazLiftBindSyntax extends ScalazLiftBindSemantic {
 
 	def liftBind[A, B, M[_]](f: A => M[B])(implicit bind: Bind[M]) = new LiftedBind(f)
 
@@ -12,15 +23,12 @@ trait ScalazLiftBindSyntax extends LiftFlatMapSemantic {
 	implicit class LiftBindOps[F[_], A](fa: F[A]) {
 
 		/**
-		 * Automatic lifting and flattening of the contained function `f` such that the application point is dicated by the
+		 * Automatic lifting and flattening of the contained function `f` such that the application point is dictated by the
 		 * argument and return type of the function.
 		 *
 		 * @param f the function that returns a type with a Bind.
-		 * @tparam B the argument type of the function.
-		 * @tparam C the inner type of the return type of the function.
-		 * @tparam M the higher-kinded type of the return type of the function which has a Bind.
 		 */
-		def liftBind[B, C, M[_]](f: B => M[C])(implicit lift: LiftFlatMap[F[A], B => M[C]]): lift.Out = lift(fa, f)
+		def liftBind[Func](f: Func)(implicit lift: LiftFlatMap[F[A], Func]): lift.Out = lift(fa, f)
 	}
 
   final class LiftedBind[A, B, M[_]](protected val f: A => M[B])(implicit bind: Bind[M]){
