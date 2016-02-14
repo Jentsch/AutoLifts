@@ -15,7 +15,7 @@ AutoLifts is organized in a multi-project structure. The following modules are a
 
 The *core* module is a dependency of *algebird*, *cats* and *scalaz*. While it forms the backbone of AutoLifts and can be downloaded, it is not a standalone project. Subprojects such as [docs](https://github.com/wheaties/AutoLifts/tree/develop/docs) and [bench](https://github.com/wheaties/AutoLifts/tree/develop/bench) are for reference only.
 
-##Using
+## Using
 The current released branch is 0.4 and compiled against Scala version 2.11. If using SBT add the following to the build definition:
 
 ```scala
@@ -50,11 +50,31 @@ scala> liftedOne(List(Option(1), None))
 res2: List[Option[Int]] = List(Some(2), None)
 ```
 
-##Folding
+## Folding
 A generalization on the concept of folding. Any traversable object yields folds over arbitrarily deep nestings. See documentation for a more indepth understanding:
 
 ```scala
 scala> val nested = List(List("1", "2", "3"), Nil, List("4", "5", "6"))
 scala> nested.foldWith{ x: String => x.toInt }
 res4: Int = 21
+```
+
+## Code structure
+
+* Cake pattern
+* Every functionality is parted into
+  * a semantic trait where the general behaviour is defined and requirments are defined
+  * a syntax trait where method names are defined. This trait extends the semantic trait
+* Every module extends all supported semantic traits and if the general syntax is similar also the syntax trait. (In
+  this case the import of the semantic trait isn't nessary')
+
+Example without implementations
+```scala
+trait LiftFlatMapSemantic { ... }
+trait LitfFlatMapSyntax extends LiftFlatMapSemantic { ... }
+
+object Cats extends LitfFlatMapSyntax { ... }
+
+trait ScalazBindSyntax extends LiftFlatMapSemantic
+object Scalaz extends ScalazBindSyntax
 ```
