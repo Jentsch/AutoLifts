@@ -2,14 +2,26 @@ package autolift
 
 import autolift.cats._
 
-object Cats extends Syntax with Context with Reexports with Implicits with LiftMapSyntax with LiftFlatMapSyntax with LiftFlattenSyntax {
+object Cats extends Syntax
+  with Context
+  with Reexports
+  with Implicits
+  with LiftMapSyntax
+  with LiftFlatMapSyntax
+  with LiftFlattenSyntax
+  with CatsFoldForallSyntax {
   protected type Functor[F[_]] = _root_.cats.Functor[F]
   protected type FlatMap[M[_]] = _root_.cats.FlatMap[M]
+  protected type Foldable[F[_]] = _root_.cats.Foldable[F]
 
   protected def map[F[_], A, B](fa: F[A])(f: A => B)(implicit fun: Functor[F]): F[B] =
     fun.map(fa)(f)
+
   protected def flatMap[M[_], A, B](ma: M[A])(f: A => M[B])(implicit m: FlatMap[M]): M[B] =
     m.flatMap(ma)(f)
+
+  protected def all[F[_], A](fa: F[A])(f: A => Boolean)(implicit fold: Foldable[F]): Boolean =
+    fold.forall(fa)(f)
 
 	implicit def liftedMapFunctor[A]: Functor[LiftedMap[A, ?]] =
     new Functor[LiftedMap[A, ?]] {
@@ -23,7 +35,6 @@ object Cats extends Syntax with Context with Reexports with Implicits with LiftM
   implicit def mkFlM[Obj, Fn](implicit lift: CatsLiftFoldMap[Obj, Fn]): CatsLiftFoldMap.Aux[Obj, Fn, lift.Out] = lift
   implicit def mkFlA[M[_], Obj](implicit lift: CatsLiftFoldAt[M, Obj]): CatsLiftFoldAt.Aux[M, Obj, lift.Out] = lift
   implicit def mkFil[Obj, Fn](implicit lift: CatsLiftFilter[Obj, Fn]): CatsLiftFilter[Obj, Fn] = lift
-  implicit def mkFAll[Obj, Fn](implicit lift: CatsFoldAll[Obj, Fn]): CatsFoldAll[Obj, Fn] = lift
   implicit def mkFAny[Obj, Fn](implicit lift: CatsFoldExists[Obj, Fn]): CatsFoldExists[Obj, Fn] = lift
   implicit def mkAll[Obj, Fn](implicit lift: CatsLiftForAll[Obj, Fn]): CatsLiftForAll.Aux[Obj, Fn, lift.Out] = lift
   implicit def mkAny[Obj, Fn](implicit lift: CatsLiftExists[Obj, Fn]): CatsLiftExists.Aux[Obj, Fn, lift.Out] = lift

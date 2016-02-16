@@ -8,14 +8,18 @@ object Scalaz extends Syntax
   with Implicits
   with LiftMapSyntax
   with ScalazLiftBindSyntax
-  with ScalazLiftJoinSyntax {
+  with ScalazLiftJoinSyntax
+  with FoldAllSyntax {
 
   protected type Functor[T[_]] = _root_.scalaz.Functor[T]
   protected type FlatMap[T[_]] = _root_.scalaz.Bind[T]
+	protected type Foldable[T[_]] = _root_.scalaz.Foldable[T]
   protected def map[F[_], A, B](fa: F[A])(f: A => B)(implicit fun: Functor[F]): F[B] =
     fun.map(fa)(f)
   protected def flatMap[M[_], A, B](ma: M[A])(f: A => M[B])(implicit m: FlatMap[M]): M[B] =
     m.bind(ma)(f)
+  protected def all[F[_], A](fa: F[A])(f: A => Boolean)(implicit fold: Foldable[F]): Boolean =
+    fold.all(fa)(f)
 
 	implicit def liftedMapFunctor[A]: Functor[LiftedMap[A, ?]] =
     new Functor[LiftedMap[A, ?]] {
@@ -30,7 +34,6 @@ object Scalaz extends Syntax
 	implicit def mkFlM[Obj, Fn](implicit lift: ScalazLiftFoldMap[Obj, Fn]): ScalazLiftFoldMap.Aux[Obj, Fn, lift.Out] = lift
 	implicit def mkFlA[M[_], Obj](implicit lift: ScalazLiftFoldAt[M, Obj]): ScalazLiftFoldAt.Aux[M, Obj, lift.Out] = lift
 	implicit def mkFil[Obj, Fn](implicit lift: ScalazLiftFilter[Obj, Fn]): ScalazLiftFilter[Obj, Fn] = lift
-	implicit def mkFAll[Obj, Fn](implicit lift: ScalazFoldAll[Obj, Fn]): ScalazFoldAll[Obj, Fn] = lift
 	implicit def mkFAny[Obj, Fn](implicit lift: ScalazFoldExists[Obj, Fn]): ScalazFoldExists[Obj, Fn] = lift
 	implicit def mkAll[Obj, Fn](implicit lift: ScalazLiftForAll[Obj, Fn]): ScalazLiftForAll.Aux[Obj, Fn, lift.Out] = lift
 	implicit def mkAny[Obj, Fn](implicit lift: ScalazLiftExists[Obj, Fn]): ScalazLiftExists.Aux[Obj, Fn, lift.Out] = lift

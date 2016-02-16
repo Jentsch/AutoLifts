@@ -8,7 +8,6 @@ trait Context extends LiftApContext
   with LiftFoldRightContext
   with LiftFoldMapContext
   with LiftExistsContext
-  with LiftForAllContext
   with LiftMergeWithContext
   with LiftA2Context
   with LiftA3Context
@@ -51,6 +50,3 @@ trait Context extends LiftApContext
   with LiftM20Context
   with LiftM21Context
   with FoldWithContext
-  with FoldForallContext
-  with FoldExistsContext
-
