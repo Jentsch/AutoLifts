@@ -52,4 +52,3 @@ trait Context extends LiftApContext
   with LiftM20Context
   with LiftM21Context
 	with FoldWithContext
-	with FoldAnyContext

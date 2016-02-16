@@ -18,7 +18,6 @@ trait Syntax extends LiftMapSyntax
 	with LiftMergeSyntax
 	with LiftMergeWithSyntax
 	with FoldAllSyntax
-	with FoldAnySyntax
 	with FoldCompleteSyntax
 	with FoldOverSyntax
 	with FoldWithSyntax
